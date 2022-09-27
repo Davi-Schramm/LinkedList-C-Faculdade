@@ -29,23 +29,14 @@ int main(){
 }
 
 void push(node_t * head, int val){
-    node_t * arr[1000];
-    int i = 0;
     node_t * current = head;
     while (current->next != NULL){
-        arr[i] = current;
-        i++;
         current = current->next;
     }
     current->next = (node_t *) malloc(sizeof(node_t));
     current->next->val = val;
+    current->next->ant = current;
     current->next->next = NULL;
-    while(i--){
-        current->ant = arr[i-1];
-        printf("%d",current->ant->val);
-        current = current->ant;
-    }
-    current->ant = NULL;
 }
 
 void printlist(node_t * head){
