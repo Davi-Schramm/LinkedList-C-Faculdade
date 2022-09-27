@@ -4,49 +4,31 @@
 typedef struct node {
     int val;
     struct node * next;
+    struct node * ant;
 } node_t;
- 
+
 void printlist(node_t * head);
 void push(node_t * head, int val);
 void push_front(node_t ** head, int val);
-void pop(node_t ** head);
-void remove_last(node_t *head);
-void remove_by_value(node_t ** head, int val);
-void insert_by_index(node_t ** head, int index, int value);
-void remove_by_index(node_t ** head, int index);
- 
+
 int main(){
  
     node_t * head = NULL;
+    node_t * ant = NULL;
     head = (node_t *) malloc(sizeof(node_t));
+    ant = (node_t *) malloc(sizeof(node_t));
+    
     for(int i = 0;i<10;i++){
         push(head,i);
     }
- 
-    push_front(&head,500);
-    pop(&head);
-    pop(&head);
-    remove_last(head);
-    remove_by_value(&head,5);
-    insert_by_index(&head,2,17);
-    remove_by_index(&head,2);
- 
- 
- 
+    push_front(&head,123);
     printlist(head);
-    printf("\n");
+    
+    
+    
     return 0;
 }
- 
-void printlist(node_t * head){
-    node_t * current = head;
- 
-    while(current != NULL){
-        printf("%d | ",current->val);
-        current = current->next;
-    }
-}
- 
+
 void push(node_t * head, int val){
     node_t * current = head;
     while (current->next != NULL){
@@ -54,86 +36,29 @@ void push(node_t * head, int val){
     }
     current->next = (node_t *) malloc(sizeof(node_t));
     current->next->val = val;
-    current->next->next = NULL;    
+    current->next->ant = current;
+    current->next->next = NULL;
 }
- 
+
 void push_front(node_t ** head, int val){
-    node_t * new_node;
-    new_node = (node_t *) malloc(sizeof(node_t));
- 
-    new_node->val = val;
-    new_node->next = *head;
-    *head = new_node;
-}
- 
-void pop(node_t ** head){
-    node_t * next_node = NULL;
- 
-    int oldval;
-    next_node = (*head)->next;
-    oldval = (*head)->val;
-    free(*head);
-    *head = next_node;
-}
- 
- 
-void remove_last(node_t *head){
-    if(head->next == NULL){
-        free(head);
-    }
- 
-    node_t * current = head;
-    while(current->next->next != NULL){
-        current = current->next;
-    }
-    int retval = current->next->val;
-    free(current->next);
-    current->next = NULL;
-}
- 
- 
-void remove_by_value(node_t ** head, int value){
-    node_t * current = *head;
-    int flag = 0;
-    while(current->val != value){
-        if(current->next == NULL){
-            flag = 1;
-            break;
-        }
-        current = current->next;
-    }
-    if(!flag){
-        int valsaver = current->next->val;
-        current->val = valsaver;
-        current->next = current->next->next;
-    }
- 
-}
- 
- 
-void insert_by_index(node_t ** head, int index, int value){
-    node_t * current = *head;
-    int flag = 0;
-    
-    for(int j = 1;j<index;j++)
-        current = current->next;
-        
-    
     node_t * newnode;
     newnode = (node_t *) malloc(sizeof(node_t));
-    newnode->next = current->next;
-    newnode->val = value;
-    current->next = newnode;
-     
+    newnode->next = (*head);
+    newnode->ant = (node_t *) malloc(sizeof(node_t));
+    newnode->val = val;
+    (*head) = newnode;
 }
 
-
-void remove_by_index(node_t ** head, int index){
-    int i = 0;
-    node_t * current = *head;
-    int flag = 0;
-    
-    for(int j = 1;j<index;j++)
+void printlist(node_t * head){
+    node_t * current = head;
+ 
+    while(current->next != NULL){
+        printf("%d | ",current->val);
         current = current->next;
-    current->next = current->next->next;
+    }
+    printf("\n");
+    while(current->ant != NULL){
+        printf("%d | ",current->val);
+        current = current->ant;
+    }
 }
