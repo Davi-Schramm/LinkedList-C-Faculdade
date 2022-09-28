@@ -9,6 +9,9 @@ typedef struct node {
 
 void printlist(node_t * head);
 void push(node_t * head, int val);
+void pop(node_t ** head);
+void push_front(node_t ** head, int val);
+void remove_by_index(node_t * head, int index);
 
 int main(){
  
@@ -21,11 +24,62 @@ int main(){
         push(head,i);
     }
     
+    push_front(&head,120);
+    
+    push_front(&head,123);
+    
+    remove_by_index(head,2);
+    
     printlist(head);
     
     
-    
     return 0;
+}
+
+void remove_by_index(node_t * head, int index){
+    if(index <= 0){
+        if(index == 0){
+            printf("Use pop instead!\nKeeping without function! {remove_by_index}\n");
+            return;
+        }
+        else{
+            printf("Index invalid! {negative number}\nKeeping without function! {remove_by_index}\n");
+            return;
+        }
+    }
+    node_t * current = head;
+    while(index-- && current->next != NULL){
+        current = current->next;
+    }
+    if(current->next == NULL){
+        printf("Index invalid!\nKeeping without function {remove_by_index}!\n");
+        return;
+    }
+    current->next->ant = current->ant;
+    current->ant->next = current->next;
+    free(current);
+        
+}
+
+void push_front(node_t ** head, int val){
+    node_t * newnode;
+    newnode = (node_t *) malloc(sizeof(node_t));
+    newnode->val = val;
+    newnode->next = (node_t *) malloc(sizeof(node_t));
+    newnode->next = (*head);
+    newnode->ant = (node_t *) malloc(sizeof(node_t));
+    newnode->ant = NULL;
+    (*head)->ant = newnode;
+    (*head) = newnode;
+}
+
+void pop(node_t ** head){
+    
+    (*head)->next->ant = NULL;
+    node_t *pointer = (*head);
+    (*head) = (*head)->next;
+    free(pointer);
+    
 }
 
 void push(node_t * head, int val){
@@ -46,9 +100,12 @@ void printlist(node_t * head){
         printf("%d | ",current->val);
         current = current->next;
     }
+    printf("%d | ",current->val);
     printf("\n");
     while(current->ant != NULL){
         printf("%d | ",current->val);
         current = current->ant;
     }
+    printf("%d | ",current->val);
+    printf("\n");
 }
